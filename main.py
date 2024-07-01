@@ -19,6 +19,8 @@ def check_permissions(credentials_file, folder_id):
         return False
 
 
+
+'''
 if __name__ == "__main__":
     credentials_file = "credentials.json"
     root_folder_id = "12lidi-l-tWTDCAz-Uv49nA4JWZnQ4-8q"  # The ROOT Folder ID
@@ -40,3 +42,41 @@ if __name__ == "__main__":
             print("An error occurred while trying to create the folder")
     else:
         print("Permissions are not set correctly.")
+
+
+ def test_face_comparison():
+    # Load the known encodings
+    known_encodings = load_known_encodings('facial_encodings.txt')
+
+    # Capture a frame from the camera
+    cap = cv2.VideoCapture(0)
+
+    while True:
+        ret, frame = cap.read()
+
+        # Get the facial encoding of the face in the frame
+        face_locations = face_recognition.face_locations(frame)
+        face_encodings = face_recognition.face_encodings(frame, face_locations)
+
+        for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
+            # Compare the face encoding with the known encodings
+            matches = compare_faces(known_encodings, face_encoding)
+            if True in matches:
+                # Draw a square around the face
+                cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
+                # Print "442442" near the face
+                cv2.putText(frame, "442442", (left, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+            else:
+                cv2.putText(frame, "Face not found", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+
+        # Display the resulting frame
+        cv2.imshow('Frame', frame)
+
+        # Break the loop on 'q' key press
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    # After the loop release the cap object and destroy all windows
+    cap.release()
+    cv2.destroyAllWindows()
+'''
